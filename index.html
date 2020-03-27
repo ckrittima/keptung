@@ -1,0 +1,150 @@
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Kanit&display=swap" rel="stylesheet">
+    <title>KepTung</title>
+    <style>
+        body {
+            padding: 1em;
+            background: #FFF7ED;
+            font-family: 'Kanit', sans-serif;
+        }
+        
+        mobile {
+            display: flex;
+            flex-flow: column nowrap;
+            background: white;
+            margin: auto;
+            width: 414px;
+            height: 736px;
+            box-shadow: 0px 12px 24px #0004;
+        }
+        
+        .mobile-status-bar img {
+            width: 100%;
+        }
+        
+        .mobile-container {
+            height: 100%;
+            overflow: auto;
+        }
+        
+        nav {
+            background: #13A699;
+            color: white;
+            text-align: left;
+            padding: .5em;
+        }
+        
+        .page {
+            padding: 1em;
+        }
+               
+        button {
+            background: #13A699;
+            border-radius: .3em;
+            font-size: 1rem;
+            color: white;
+            width: 100%;
+            padding: 1em;
+            box-sizing: border-box;
+            border: none;
+        }
+        
+        button:hover {
+            cursor: pointer;
+        }
+        
+        input {
+            width: 100%;
+            border-radius: .3em;
+            font-size: 1rem;
+            padding: 1em .5em;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            margin-bottom: 1em;
+        }
+
+        .saving {
+            text-align: center;
+        }
+
+        .detail {
+            margin-bottom: 40px;
+            margin-top: 40px;
+        }
+
+        #page-saving {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <mobile>
+        <div class="mobile-status-bar">
+            <img src="https://i.imgur.com/XSqz2K4.png" alt="">
+        </div>
+        <div class='mobile-container'>
+            <nav>KepTung 💰</nav>
+            <div class="container">
+                <div id="page-setting" class="page">
+                        <div id="page-setting" class="page">
+                            <h2>ตั้งเป้าหมายเก็บตังค์</h2>
+                                <input type='text' placeholder='กรอกเป้าหมาย'></input>
+                                <input type='text' placeholder='จำนวนเงิน'></input>
+                                <label for="inputYear">วันเริ่มต้น</label>
+                                <input type='date' placeholder='วันเริ่ม'></input>
+                                <label for="inputYear">วันสิ้นสุด</label>
+                                <input type='date' placeholder='วันสิ้นสุด'></input>
+                                <label for="inputYear">ความถี่</label>
+                                <select id="inputYear" class="form-control">
+                                    <option value="1">รายวัน</option>
+                                    <option value="2">รายสัปดาห์</option>
+                                    <option value="3">รายเดือน</option>
+                                </select><br>
+                        <button onclick="mockupClick('page-setting','page-saving')">บันทึก</button>        
+                </div>
+            </div>
+
+            <div id="page-saving" class="page">
+                <h1>AirPods</h1>
+                <div class="row">
+                    <div class="col-6">27/03/20 <br> D-1</div>
+                    <div class="col-6" style="text-align:right;">เหลือเวลา <br>14 วัน</div>
+                </div>
+                
+                <div class="saving">
+                    
+                    <small>ยอดเก็บ/ครั้ง</small>
+                    <h1>400</h1><small>รายวัน</small>
+                </div>
+                <sp class="xs bg-grey-2"></sp>
+                <div class="detail">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: 7%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">7%</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">400</div>
+                        <div class="col-6" style="text-align:right;">5990</div>
+                    </div>
+                </div>
+                <button onclick="mockupClick('page-saving','page-setting')">กลับหน้าหลัก</button>
+            </div>
+        </div>
+    </mobile>
+
+    <script>
+        function mockupClick(pageToHide, pageToShow) {
+            document.querySelector('#' + pageToHide).style.display = "none ";
+            document.querySelector('#' + pageToShow).style.display = "block ";
+        }
+    </script>
+</body>
+
+</html>
