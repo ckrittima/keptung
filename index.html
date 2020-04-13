@@ -5,48 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <meta http-equiv=" X-UA-Compatible" content="ie=edge">
 
-    <meta name="theme-color" content="#ffbe5b" />
+    <meta name="theme-color" content="#13A699" />
 
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="ShopList">
+    <meta name="apple-mobile-web-app-title" content="KepTung">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
     <title>เก็บตังค์ | KepTung</title>
-
-    <!-- icon -->
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-    <link rel="apple-touch-icon" href="img/icon/apple-touch-icon.png" />
-    <link rel="apple-touch-icon" sizes="57x57" href="img/icon/apple-touch-icon-57x57.png" />
-    <link rel="apple-touch-icon" sizes="72x72" href="img/icon/apple-touch-icon-72x72.png" />
-    <link rel="apple-touch-icon" sizes="76x76" href="img/icon/apple-touch-icon-76x76.png" />
-    <link rel="apple-touch-icon" sizes="114x114" href="img/icon/apple-touch-icon-114x114.png" /> 
-    <link rel="apple-touch-icon" sizes="120x120" href="img/icon/apple-touch-icon-120x120.png" />
-    <link rel="apple-touch-icon" sizes="144x144" href="img/icon/apple-touch-icon-144x144.png" />
-    <link rel="apple-touch-icon" sizes="152x152" href="img/icon/apple-touch-icon-152x152.png" />
-    <link rel="apple-touch-icon" sizes="180x180" href="img/icon/apple-touch-icon-180x180.png" />
-
-    <!-- splash screen -->
-    <link href="img/splashscreens/iphone5_splash.png" 
-        media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
-    <link href="img/splashscreens/iphone6_splash.png" 
-        media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
-    <link href="img/splashscreens/iphoneplus_splash.png" 
-        media="(device-width: 621px) and (device-height: 1104px) and (-webkit-device-pixel-ratio: 3)" rel="apple-touch-startup-image" />
-    <link href="img/splashscreens/iphonex_splash.png" 
-        media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" rel="apple-touch-startup-image" />
-    <link href="img/splashscreens/iphonexr_splash.png" 
-        media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
-    <link href="img/splashscreens/iphonexsmax_splash.png" 
-        media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)" rel="apple-touch-startup-image" />
-    <link href="img/splashscreens/ipad_splash.png" 
-        media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
-    <link href="img/splashscreens/ipadpro1_splash.png" 
-        media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
-    <link href="img/splashscreens/ipadpro3_splash.png" 
-        media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
-    <link href="img/splashscreens/ipadpro2_splash.png" 
-        media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
@@ -147,10 +113,11 @@
 
         <div id="page-saving" class="page">
             <h1 id='curgoal' class="text-center"></h1>
-            <p id="demostart"></p>
-            <p id="demoend"></p>
             <div class="row">
-                <p id='showdate' class="col-6"><br> D-1</p>
+                <div class="col-6">
+                    <p id='showdate'></p>
+                    <p id='day_count'></p>
+                </div>
                 <p id='countdowndate' class="text-right col-6"></p>
             </div>
                 
@@ -164,8 +131,8 @@
                         <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: 50%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">7%</div>
                     </div>
                     <div class="row">
-                        <div class="col-6">400</div>
-                        <div id="goal_amount" class="col-6" style="text-align:right;">5990</div>
+                        <div id='store_amount' class="col-6"></div>
+                        <div id="goal_amount" class="col-6" style="text-align:right;"></div>
                     </div>
                 </div>
                 <button onclick="mockupClick('page-saving','page-home')">กลับหน้าหลัก</button>
@@ -182,38 +149,88 @@
             document.querySelector('#' + pageToHide).style.display = "none ";
             document.querySelector('#' + pageToShow).style.display = "block ";
         }
+            // var amount = document.getElementById('amount').value;
+            // var startdate= document.getElementById('startdate').value;
+            // var enddate = document.getElementById('enddate').value;
+            // var freq = document.getElementById('frequency').value;
+
+            // var date1 = new Date(startdate); 
+            // var date2 = new Date(enddate); 
+            // var time_dif = date2.getTime() - date1.getTime();
+            // var day_diff = time_dif / (1000 * 3600 * 24);
+
+            // let saving_amount = 0;
+            // if (freq == 'รายวัน'){
+            //     saving_amount = Math.ceil(amount/day_diff);
+            //     console.log(saving_amount);
+            //     // return saving_amount;
+            // } else if (freq == 'รายสัปดาห์'){
+            //     let weekly = Math.ceil(day_diff/7);
+            //     saving_amount = Math.ceil(amount/weekly);
+            //     console.log(saving_amount);
+            //     // return saving_amount;
+            // } else if (freq == 'รายเดือน') {
+            //     let monthly = Math.ceil(day_diff/30);
+            //     saving_amount = Math.ceil(amount/monthly);
+            //     console.log(saving_amount);
+            //     // return saving_amount;
+            // }
 
         function calculate(){
-            // var title = document.getElementById('goal').value;
             var amount = document.getElementById('amount').value;
             var startdate= document.getElementById('startdate').value;
             var enddate = document.getElementById('enddate').value;
             var freq = document.getElementById('frequency').value;
-            // document.getElementById('curgoal').innerHTML = title;
-            // document.getElementById('showfrequency').innerHTML = '(' + freq + ')';
-            // document.getElementById('goal_amount').innerHTML = amount;
 
             var date1 = new Date(startdate); 
             var date2 = new Date(enddate); 
             var time_dif = date2.getTime() - date1.getTime();
             var day_diff = time_dif / (1000 * 3600 * 24);
-            document.getElementById('countdowndate').innerHTML = 'เหลืออีก <br>'+day_diff+' วัน';
 
             let saving_amount = 0;
             if (freq == 'รายวัน'){
                 saving_amount = Math.ceil(amount/day_diff);
+                console.log(saving_amount);
+                // return saving_amount;
             } else if (freq == 'รายสัปดาห์'){
                 let weekly = Math.ceil(day_diff/7);
                 saving_amount = Math.ceil(amount/weekly);
+                console.log(saving_amount);
+                // return saving_amount;
             } else if (freq == 'รายเดือน') {
                 let monthly = Math.ceil(day_diff/30);
                 saving_amount = Math.ceil(amount/monthly);
+                console.log(saving_amount);
+                // return saving_amount;
             }
+            console.log(saving_amount);
             document.getElementById('saving_amount').innerHTML = saving_amount;
+            calPercent()
             showdetail();
             mockupClick('page-setting','page-saving');
         }
 
+        function calPercent(){
+            var amount = document.getElementById('amount').value;
+            var startdate= document.getElementById('startdate').value;
+            var enddate = document.getElementById('enddate').value;
+
+            var c_date = new Date();
+            var e_date = new Date(enddate);
+            var currentDate = c_date.getDate()+'/'+(c_date.getMonth()+1)+'/'+c_date.getFullYear(); 
+            var s_date = new Date(startdate);
+            var t_dif =  c_date.getTime() - s_date.getTime();
+            var t_diff2 = e_date.getTime() - c_date.getTime();
+            var day_count = t_dif / (1000 * 3600 * 24);
+            var remain_day = t_diff2 / (1000 * 3600 * 24);
+            // console.log(t_dif, s_date, day_count)
+            //คำนวนยอดเงินสะสม
+            var store_amount = saving_amount*parseInt(day_count);
+            document.getElementById('store_amount').innerHTML = parseInt(store_amount);
+            document.getElementById('day_count').innerHTML = '<p>D-'+day_count.toFixed(0)+'</p>';
+            document.getElementById('countdowndate').innerHTML = 'เหลืออีก <br>'+remain_day.toFixed(0)+' วัน';
+
+        }
         function showdetail(){
             var title = document.getElementById('goal').value;
             var amount = document.getElementById('amount').value;
