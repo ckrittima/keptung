@@ -147,7 +147,7 @@
             var enddate = document.getElementById('enddate').value;
             var freq = document.getElementById('frequency').value;
             document.getElementById('curgoal').innerHTML = title;
-            document.getElementById('showfrequency').innerHTML = freq;
+            document.getElementById('showfrequency').innerHTML = '(' + freq + ')';
             document.getElementById('goal_amount').innerHTML = amount;
 
             var date1 = new Date(startdate); 
@@ -166,7 +166,7 @@
                 let monthly = Math.ceil(day_diff/30);
                 saving_amount = Math.ceil(amount/monthly);
             }
-            document.getElementById('saving_amount').innerHTML = saving_amount + ' ฿';
+            document.getElementById('saving_amount').innerHTML = saving_amount;
             mockupClick('page-setting','page-saving')
         }
 
