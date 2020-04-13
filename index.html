@@ -10,28 +10,10 @@
     <title>KepTung</title>
     <style>
         body {
-            padding: 1em;
-            background: #FFF7ED;
+            /* padding: 1em; */
+            background: #eeeeee;
+            /* background-color: #404040; */
             font-family: 'Kanit', sans-serif;
-        }
-        
-        mobile {
-            display: flex;
-            flex-flow: column nowrap;
-            background: white;
-            margin: auto;
-            width: 414px;
-            height: 736px;
-            box-shadow: 0px 12px 24px #0004;
-        }
-        
-        .mobile-status-bar img {
-            width: 100%;
-        }
-        
-        .mobile-container {
-            height: 100%;
-            overflow: auto;
         }
         
         nav {
@@ -39,10 +21,14 @@
             color: white;
             text-align: left;
             padding: .5em;
+            position: absolute;
+            left: 0;
+            right: 0;
         }
         
         .page {
             padding: 1em;
+            padding-top: 60px;
         }
                
         button {
@@ -64,7 +50,7 @@
             width: 100%;
             border-radius: .3em;
             font-size: 1rem;
-            padding: 1em .5em;
+            padding: .5em .5em;
             box-sizing: border-box;
             border: 1px solid #ccc;
             margin-bottom: 1em;
@@ -79,71 +65,120 @@
             margin-top: 40px;
         }
 
-        #page-saving {
+        #page-setting, #page-saving {
             display: none;
+        }
+
+        #list-goal {
+            height: 320px;
         }
     </style>
 </head>
 
 <body>
-    <mobile>
-        <div class="mobile-status-bar">
-            <img src="https://i.imgur.com/XSqz2K4.png" alt="">
-        </div>
-        <div class='mobile-container'>
-            <nav>KepTung 💰</nav>
-            <div class="container">
-                <div id="page-setting" class="page">
-                        <div id="page-setting" class="page">
-                            <h2>ตั้งเป้าหมายเก็บตังค์</h2>
-                                <input type='text' placeholder='กรอกเป้าหมาย'></input>
-                                <input type='text' placeholder='จำนวนเงิน'></input>
-                                <label for="inputYear">วันเริ่มต้น</label>
-                                <input type='date' placeholder='วันเริ่ม'></input>
-                                <label for="inputYear">วันสิ้นสุด</label>
-                                <input type='date' placeholder='วันสิ้นสุด'></input>
-                                <label for="inputYear">ความถี่</label>
-                                <select id="inputYear" class="form-control">
-                                    <option value="1">รายวัน</option>
-                                    <option value="2">รายสัปดาห์</option>
-                                    <option value="3">รายเดือน</option>
-                                </select><br>
-                        <button onclick="mockupClick('page-setting','page-saving')">บันทึก</button>        
-                </div>
+    <div class='container-fluid bg-light col-md-6'>
+        <nav>KepTung 💰</nav>
+        <div id="page-home" class="page">
+            <h2>เป้าหมายของคุณ</h2>
+            <div id="list-goal">
             </div>
+            <button onclick="mockupClick('page-home','page-setting')">เพิ่มเป้าหมาย</button>        
+        </div>
 
-            <div id="page-saving" class="page">
-                <h1>AirPods</h1>
-                <div class="row">
-                    <div class="col-6">27/03/20 <br> D-1</div>
-                    <div class="col-6" style="text-align:right;">เหลือเวลา <br>14 วัน</div>
-                </div>
+        <div id="page-setting" class="page">
+            <h3>ตั้งเป้าหมายเก็บตังค์</h3>
+            <input type='text' id='goal' placeholder='กรอกเป้าหมาย'></input>
+            <input type='number' id='amount' placeholder='จำนวนเงิน'></input>
+            <label for="Inputstartdate">วันเริ่มต้น</label>
+            <input type='date' id='startdate'></input>
+            <label for="inputenddate">วันสิ้นสุด</label>
+            <input type='date' id='enddate'></input>
+            <label for="inputfrequency">ความถี่</label>
+            <select id="frequency" class="form-control">
+                <option value="รายวัน">รายวัน</option>
+                <option value="รายสัปดาห์">รายสัปดาห์</option>
+                <option value="รายเดือน">รายเดือน</option>
+            </select><br>
+            <button onclick="calculate()">บันทึก</button>
+        </div>
+
+        <div id="page-saving" class="page">
+            <h1 id='curgoal' class="text-center"></h1>
+            <p id="demostart"></p>
+            <p id="demoend"></p>
+            <div class="row">
+                <p id='showdate' class="col-6"><br> D-1</p>
+                <p id='countdowndate'class="text-right col-6"></p>
+            </div>
                 
                 <div class="saving">
-                    
                     <small>ยอดเก็บ/ครั้ง</small>
-                    <h1>400</h1><small>รายวัน</small>
+                    <h1 id='saving_amount'></h1><small id='showfrequency'></small>
                 </div>
-                <sp class="xs bg-grey-2"></sp>
+
                 <div class="detail">
                     <div class="progress">
                         <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: 7%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">7%</div>
                     </div>
                     <div class="row">
                         <div class="col-6">400</div>
-                        <div class="col-6" style="text-align:right;">5990</div>
+                        <div id="goal_amount" class="col-6" style="text-align:right;">5990</div>
                     </div>
                 </div>
-                <button onclick="mockupClick('page-saving','page-setting')">กลับหน้าหลัก</button>
+                <button onclick="mockupClick('page-saving','page-home')">กลับหน้าหลัก</button>
             </div>
         </div>
-    </mobile>
+        <div class="footer text-right mt-2 p-2 text-dark text-center">
+            <small>*เศษทศนิยมจะถูกปัดขึ้นอัตโนมัติ</small><br/>
+            <small>KepTung by ckrittima</small>
+            <!-- <small>KepTung by <a href="https://github.com/ckrittima" style="color:#13A699">@ckrittima 🥬</a></small> -->
+        </div>
 
     <script>
         function mockupClick(pageToHide, pageToShow) {
             document.querySelector('#' + pageToHide).style.display = "none ";
             document.querySelector('#' + pageToShow).style.display = "block ";
         }
+
+        function calculate(){
+            var title = document.getElementById('goal').value;
+            var amount = document.getElementById('amount').value;
+            var startdate= document.getElementById('startdate').value;
+            var enddate = document.getElementById('enddate').value;
+            var freq = document.getElementById('frequency').value;
+            document.getElementById('curgoal').innerHTML = title;
+            document.getElementById('showfrequency').innerHTML = freq;
+            document.getElementById('goal_amount').innerHTML = amount;
+
+            var date1 = new Date(startdate); 
+            var date2 = new Date(enddate); 
+            var time_dif = date2.getTime() - date1.getTime();
+            var day_diff = time_dif / (1000 * 3600 * 24);
+            document.getElementById('countdowndate').innerHTML = day_diff;
+
+            let saving_amount = 0;
+            if (freq == 'รายวัน'){
+                saving_amount = Math.ceil(amount/day_diff);
+            } else if (freq == 'รายสัปดาห์'){
+                let weekly = Math.ceil(day_diff/7);
+                saving_amount = Math.ceil(amount/weekly);
+            } else if (freq == 'รายเดือน') {
+                let monthly = Math.ceil(day_diff/30);
+                saving_amount = Math.ceil(amount/monthly);
+            }
+            document.getElementById('saving_amount').innerHTML = saving_amount + ' ฿';
+            mockupClick('page-setting','page-saving')
+        }
+
+        function getDate(){
+            var d = new Date();
+            var currentDate = new Date();
+            var day = currentDate.getDate();
+            var month = currentDate.getMonth() + 1;
+            var year = currentDate.getFullYear();
+            document.getElementById('showdate').innerHTML = '<p>' + day + "/" + month + "/" + year + '</p>';
+        }
+        getDate()
     </script>
 </body>
 
