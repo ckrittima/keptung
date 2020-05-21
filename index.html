@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css?family=Kanit&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
         body {
             /* padding: 1em; */
@@ -79,8 +80,22 @@
             display: none;
         }
 
-        #list-goal {
-            height: 320px;
+        #list_goal {
+            height: 410px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        #goal_item{
+            background-color: #13a69936;
+            padding: 1em;
+            margin-bottom: 10px;
+        }
+
+        #backbtn{
+            margin-top: 5px;
+            background-color: #eeeeee;
+            color: #000;
         }
     </style>
 </head>
@@ -88,28 +103,36 @@
 <body>
     <div class='container-fluid bg-light col-md-6'>
         <nav>KepTung 💰</nav>
+        
         <div id="page-home" class="page">
             <h2>เป้าหมายของคุณ</h2>
-            <div id="list-goal">
-            </div>
-            <button onclick="mockupClick('page-home','page-setting')">เพิ่มเป้าหมาย</button>
+            <div id="list_goal"></div>
+            
+            <button id="Addbtn" onclick="mockupClick('page-home','page-setting')">เพิ่มเป้าหมาย</button>
         </div>
 
         <div id="page-setting" class="page">
-            <h3>ตั้งเป้าหมายเก็บตังค์</h3>
+            <h3>ตั้งเป้าเก็บตังค์</h3>
             <input type='text' id='goal' placeholder='ชื่อเป้าหมาย'></input>
             <input type='number' id='amount' placeholder='จำนวนเงิน'></input>
-            <label for="Inputstartdate">วันเริ่มต้น</label>
-            <input type='date' id='startdate'></input>
-            <label for="inputenddate">วันสิ้นสุด</label>
-            <input type='date' id='enddate'></input>
+            <div class="row">
+                <div class="col-6">
+                    <label for="Inputstartdate">วันเริ่มต้น</label>
+                    <input type='date' id='startdate'></input>
+                </div>
+                <div class="col-6">
+                    <label for="inputenddate">วันสิ้นสุด</label>
+                    <input type='date' id='enddate'></input>
+                </div>
+            </div>
             <label for="inputfrequency">ความถี่</label>
             <select id="frequency" class="form-control">
                 <option value="รายวัน">รายวัน</option>
                 <option value="รายสัปดาห์">รายสัปดาห์</option>
                 <option value="รายเดือน">รายเดือน</option>
             </select><br>
-            <button onclick="calculate()">บันทึก</button>
+            <button onclick="addItem()">บันทึก</button>
+            <button id="backbtn"onclick="mockupClick('page-setting','page-home')">กลับหน้าหลัก</button>
         </div>
 
         <div id="page-saving" class="page">
@@ -142,11 +165,57 @@
     </div>
     <div class="footer text-right mt-2 p-2 text-dark text-center">
         <small>*เศษทศนิยมจะถูกปัดขึ้นอัตโนมัติ</small><br />
-        <small>KepTung by ckrittima</small>
-        <!-- <small>KepTung by <a href="https://github.com/ckrittima" style="color:#13A699">@ckrittima 🥬</a></small> -->
+        <!-- <small>KepTung by ckrittima</small> -->
+        <small>KepTung by <a href="https://web.facebook.com/aomxsyn" style="color:#13A699">aomsyn</a> 🧃</small>
     </div>
 
     <script>
+        if (localStorage.getItem("allGoals") === null){
+            localStorage.setItem("allGoals", "[]");
+        }
+        allGoals = JSON.parse(localStorage.allGoals);
+
+        function addItem(){
+            let title = document.getElementById("goal").value;
+            let amount = document.getElementById("amount").value;
+            let startdate = document.getElementById("startdate").value;
+            let enddate = document.getElementById("enddate").value;
+            let freq = document.getElementById('frequency').value;
+            if (title != "" && amount > 0 && startdate != "" && enddate != "" && freq != ""){
+                allGoals.push({"title": title, "amount": amount, "frequency": freq, "startDate": startdate, "endDate": enddate});
+                calculate();
+                document.getElementById("goal").value = "";
+                document.getElementById("amount").value = "";
+                document.getElementById("startdate").value = "";
+                document.getElementById("enddate").value = "";
+                document.getElementById('frequency').value = "";
+                displayGoal()
+            }
+        }
+        // <div id="goal_item" class="row" ondblclick="removeGoal(${element.index-1})">
+        function displayGoal(){
+            allGoals.forEach(element => {
+                console.log(element.title);
+                list_goal.innerHTML += `
+				<div id="goal_item" class="row" ondblclick="removeGoal(${element.index-1})" onclick="showdetail()">
+                    <div class="col-6">
+                    <h3>${element.title}</h3>
+                    <small>${element.frequency}</small>
+                    </div>
+                    <div class="col-6"><h3 class="text-right">${element.amount}</h3>
+				</div>
+                `;
+            });
+            console.log(allGoals);
+			localStorage.setItem("allGoals", JSON.stringify(allGoals));
+        }
+        displayGoal()
+
+        function removeGoal(index){
+			remove = allGoals.splice(index, 1);
+            displayGoal();
+		}
+
         let date = new Date();
         document.getElementById("startdate").max = `${date.getFullYear()}-${date.getMonth()}-${date.getDay()}`;
         document.getElementById("enddate").min = new Date();
@@ -166,16 +235,20 @@
             var date1 = new Date(startdate);
             var date2 = new Date(enddate);
             var time_dif = date2.getTime() - date1.getTime();
-            var day_diff = time_dif / (1000 * 3600 * 24);
+            var day_diff = (time_dif / (1000 * 3600 * 24))+1;
 
             let saving_amount = 0;
             if (freq == 'รายวัน') {
                 saving_amount = Math.ceil(amount / day_diff);
             } else if (freq == 'รายสัปดาห์') {
                 let weekly = Math.ceil(day_diff / 7);
+                console.log("weekly", weekly);
                 saving_amount = Math.ceil(amount / weekly);
+                console.log(day_diff);
+                console.log(weekly);
+                console.log(saving_amount); 
             } else if (freq == 'รายเดือน') {
-                let monthly = Math.ceil(day_diff / 30);
+                let monthly = day_diff / 30;
                 saving_amount = Math.ceil(amount / monthly);
             }
             document.getElementById('saving_amount').innerHTML = saving_amount;
@@ -184,10 +257,26 @@
             mockupClick('page-setting', 'page-saving');
         }
 
+        function getInputDate(){
+            var startD = document.getElementById('startdate').value;
+            var endD = document.getElementById('enddate').value;
+            CalMonthDiff(new Date(startD), new Date(endD));
+        }
+
+        function CalMonthDiff(d1, d2){
+            var months;
+            months = (d2.getFullYear() - d1.getFullYear()) * 12;
+            months -= d1.getMonth();
+            months += d2.getMonth();
+            return months <= 0 ? 0 : months;
+        }
+
         function calPercent(saving_amount) {
             var amount = document.getElementById('amount').value;
             var startdate = document.getElementById('startdate').value;
             var enddate = document.getElementById('enddate').value;
+            var freq = document.getElementById('frequency').value;
+            console.log(freq);
 
             var c_date = new Date();
             var e_date = new Date(enddate);
@@ -196,22 +285,61 @@
             var t_dif = c_date.getTime() - s_date.getTime();
             var t_diff2 = e_date.getTime() - c_date.getTime();
             // console.log(t_diff2)
-            var day_count = t_dif / (1000 * 3600 * 24);
+            var day_count = (t_dif / (1000 * 3600 * 24)+1);
+            var week_count = ((t_dif / (1000 * 3600 * 24))/7)+1;
+            var month_count = ((t_dif / (1000 * 3600 * 24))/30);
+
+            console.log("day_count", day_count);
+            console.log("week_count", week_count);
+            console.log("month_count", month_count);
+
             var remain_day = t_diff2 / (1000 * 3600 * 24);
-            var store_amount = saving_amount * parseInt(day_count);
-            var percent = ((store_amount / amount) * 100).toFixed(0);
-            document.getElementById('store_amount').innerHTML = parseInt(store_amount);
-            document.getElementById('day_count').innerHTML = '<p>D-' + day_count.toFixed(0) + '</p>';
-            if (remain_day < 0){
-                remain_day = 0;
-                document.getElementById('countdowndate').innerHTML = 'เหลืออีก <br>' + remain_day.toFixed(0) + ' วัน';
-            } else {
-                document.getElementById('countdowndate').innerHTML = 'เหลืออีก <br>' + remain_day.toFixed(0) + ' วัน';
-            }
+            var remain_week = remain_day/7;
+            var remain_month = remain_day/30;
+            console.log("remain_day", remain_day);
+            console.log("remain_week", remain_week);
+            console.log("remain_month", remain_month);
+            var store_amountd = saving_amount * parseInt(day_count);
+            var store_amountw = saving_amount * parseInt(week_count);
+            var store_amountm = saving_amount * parseInt(month_count);
+
+            if(freq == "รายวัน"){
+                var percent = ((store_amountd / amount) * 100).toFixed(0);
+                document.getElementById('store_amount').innerHTML = parseInt(store_amountd);
+                document.getElementById('day_count').innerHTML = '<p>D-' + day_count.toFixed(0) + '</p>';
+                if (remain_day < 0){
+                    remain_day = 0;
+                    document.getElementById('countdowndate').innerHTML = 'เหลืออีก <br>' + remain_day.toFixed(0) + ' วัน';
+                } else {
+                    document.getElementById('countdowndate').innerHTML = 'เหลืออีก <br>' + remain_day.toFixed(0) + ' วัน';
+                }
+            } else if(freq == "รายสัปดาห์"){
+                var percent = ((store_amountw / amount) * 100).toFixed(0);
+                document.getElementById('store_amount').innerHTML = parseInt(store_amountw);
+                document.getElementById('day_count').innerHTML = '<p>W-' + week_count.toFixed(0) + '</p>';
+                if (remain_day < 0){
+                    remain_day = 0;
+                    document.getElementById('countdowndate').innerHTML = 'เหลืออีก <br>' + remain_week.toFixed(0) + ' สัปดาห์';
+                } else {
+                    document.getElementById('countdowndate').innerHTML = 'เหลืออีก <br>' + remain_week.toFixed(0) + ' สัปดาห์';
+                }
+            } else if(freq == "รายเดือน"){
+                var percent = ((store_amountm / amount) * 100).toFixed(0);
+                document.getElementById('store_amount').innerHTML = parseInt(store_amountm);
+                document.getElementById('day_count').innerHTML = '<p>M-' + month_count.toFixed(0) + '</p>';
+                if (remain_day < 0){
+                    remain_day = 0;
+                    document.getElementById('countdowndate').innerHTML = 'เหลืออีก <br>' + remain_month.toFixed(0) + ' เดือน';
+                } else {
+                    document.getElementById('countdowndate').innerHTML = 'เหลืออีก <br>' + remain_month.toFixed(0) + ' เดือน';
+                }
+            
             document.getElementById('progress_bar').style.width = percent + '%';
             document.getElementById('progress_bar').innerHTML = percent + '%';
             
+            }
         }
+
         function showdetail() {
             var title = document.getElementById('goal').value;
             var amount = document.getElementById('amount').value;
