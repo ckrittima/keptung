@@ -90,6 +90,7 @@
             background-color: #13a69936;
             padding: 1em;
             margin-bottom: 10px;
+            overflow-x: auto;
         }
 
         #backbtn{
@@ -105,7 +106,7 @@
         <nav>KepTung 💰</nav>
         
         <div id="page-home" class="page">
-            <h2>เป้าหมายของคุณ</h2>
+            <h2>เป้าหมายเก็บตังค์</h2>
             <div id="list_goal"></div>
             
             <button id="Addbtn" onclick="mockupClick('page-home','page-setting')">เพิ่มเป้าหมาย</button>
@@ -118,11 +119,11 @@
             <div class="row">
                 <div class="col-6">
                     <label for="Inputstartdate">วันเริ่มต้น</label>
-                    <input type='date' id='startdate'></input>
+                    <input type='date' id='startdate' onchange="calDayDiff()"></input>
                 </div>
                 <div class="col-6">
                     <label for="inputenddate">วันสิ้นสุด</label>
-                    <input type='date' id='enddate'></input>
+                    <input type='date' id='enddate' onchange="calDayDiff()"></input>
                 </div>
             </div>
             <label for="inputfrequency">ความถี่</label>
@@ -174,6 +175,8 @@
             localStorage.setItem("allGoals", "[]");
         }
         allGoals = JSON.parse(localStorage.allGoals);
+        var SavingAmount = [];
+        var diff = [];
 
         function addItem(){
             let title = document.getElementById("goal").value;
@@ -192,10 +195,9 @@
                 displayGoal()
             }
         }
-        // <div id="goal_item" class="row" ondblclick="removeGoal(${element.index-1})">
+
         function displayGoal(){
             allGoals.forEach(element => {
-                console.log(element.title);
                 list_goal.innerHTML += `
 				<div id="goal_item" class="row" ondblclick="removeGoal(${element.index-1})" onclick="showdetail()">
                     <div class="col-6">
@@ -233,6 +235,7 @@
             var freq = document.getElementById('frequency').value;
 
             var date1 = new Date(startdate);
+            // console.log('date1', date1);
             var date2 = new Date(enddate);
             var time_dif = date2.getTime() - date1.getTime();
             var day_diff = (time_dif / (1000 * 3600 * 24))+1;
@@ -242,11 +245,11 @@
                 saving_amount = Math.ceil(amount / day_diff);
             } else if (freq == 'รายสัปดาห์') {
                 let weekly = Math.ceil(day_diff / 7);
-                console.log("weekly", weekly);
+                // console.log("weekly", weekly);
                 saving_amount = Math.ceil(amount / weekly);
-                console.log(day_diff);
-                console.log(weekly);
-                console.log(saving_amount); 
+                // console.log(day_diff);
+                // console.log(weekly);
+                // console.log(saving_amount); 
             } else if (freq == 'รายเดือน') {
                 let monthly = day_diff / 30;
                 saving_amount = Math.ceil(amount / monthly);
@@ -257,26 +260,127 @@
             mockupClick('page-setting', 'page-saving');
         }
 
-        function getInputDate(){
-            var startD = document.getElementById('startdate').value;
-            var endD = document.getElementById('enddate').value;
-            CalMonthDiff(new Date(startD), new Date(endD));
+        function getDate(start, end){
+                    let startList = [];
+                    let endList = [];
+                    startList.push(start.getFullYear(), start.getMonth()+1, start.getDate());
+                    endList.push(end.getFullYear(), end.getMonth()+1, end.getDate());
+                    CalMonthDiff(startList, endList);
+                    calWeekDiff(new Date(startList), new Date(endList));
+                    // console.log(startList);
+                    // console.log(endList);
+                    // console.log(CalMonthDiff(startList, endList));
+        }
+        
+        function calDayDiff(){
+            if (startdate.value != "" && enddate.value != ""){
+                let StartDate = new Date(startdate.value);
+                let EndDate = new Date(enddate.value);
+                let CurrentDate = new Date();
+                let DayPass = 0;
+                let DayDiff = 0;
+                let DayLeft = 0;
+                if (EndDate >= StartDate){
+                    DayDiff = (EndDate - StartDate);
+                    DayDiff = DayDiff/(3600 * 24 * 1000)+1;
+                    // console.log(DayDiff);
+                }
+                DayPass = Math.ceil((CurrentDate - StartDate)/(3600 * 24 * 1000));
+                // DayLeft = Math.ceil((EndDate - CurrentDate)/(3600 * 24 * 1000));
+                DayLeft = DayDiff - DayPass;
+                console.log("DayPass", DayPass);
+                console.log("DayLeft", DayLeft);
+                getDate(StartDate, EndDate);
+                calDailyAmount(DayDiff);
+                diff.push("DayDiff", DayDiff, "DayPass", DayPass, "DayLeft", DayLeft);
+            }
+        }
+        console.log(allGoals);
+        function calWeekDiff(startDate, endDate){
+            var CurrentDate = new Date();
+            var WeekDiff = Math.round((endDate - startDate) / (7 * 24 * 3600 * 1000));
+            var WeekPass = Math.round((CurrentDate - startDate) / (7 * 24 * 3600 * 1000));
+            var WeekLeft = WeekDiff-WeekPass;
+            diff.push("WeekDiff", WeekDiff, "WeekPass", WeekPass, "WeekLeft", WeekLeft);
+            // console.log("c", CurrentDate);
+            // console.log("s", startDate);
+            // console.log("e", endDate);
+            // console.log("WeekPass", WeekPass);
+            // console.log("WeekLeft", WeekLeft);
+            calWeeklyAmount(WeekDiff);
         }
 
-        function CalMonthDiff(d1, d2){
-            var months;
-            months = (d2.getFullYear() - d1.getFullYear()) * 12;
-            months -= d1.getMonth();
-            months += d2.getMonth();
-            return months <= 0 ? 0 : months;
+        function CalMonthDiff(startDate, endDate){
+            var MonthDiff;
+            var currentDate = new Date();
+            console.log("startDate", startDate);
+            console.log("endDate", endDate);
+            MonthDiff = (endDate[0] - startDate[0]) * 12;
+            MonthDiff -= startDate[1];
+            MonthDiff += endDate[1];
+            if(MonthDiff <= 0){
+                MonthDiff = 0;
+            } else {
+                MonthDiff = MonthDiff;
+            }
+            MonthPass = (currentDate.getFullYear() - startDate[0])*12;
+            MonthPass -= startDate[1];
+            MonthPass += (currentDate.getMonth()+1);
+            MonthLeft = MonthDiff - MonthPass;
+            diff.push("MonthDiff", MonthDiff, "MonthPass", MonthPass, "MonthLeft", MonthLeft);
+            calMonthlyAmount(MonthDiff);
+            console.log("MonthDiff", MonthDiff);
+            console.log("MonthPass", MonthPass);
+            console.log("MonthLeft", MonthLeft);
+        }
+        console.log(diff);
+        function calDailyAmount(day){
+            var InputAmount = document.getElementById('amount').value;
+            var DailyAmount = Math.ceil(InputAmount/day);
+            SavingAmount.push("DailyAmount", DailyAmount);
+            console.log(SavingAmount);
         }
 
-        function calPercent(saving_amount) {
+        function calWeeklyAmount(week){
+            var InputAmount = document.getElementById('amount').value;
+            var WeeklyAmount = Math.ceil(InputAmount/week);
+            SavingAmount.push("WeeklyAmount", WeeklyAmount);
+        }
+
+        function calMonthlyAmount(month){
+            var InputAmount = document.getElementById('amount').value;
+            var MonthlyAmount = Math.ceil(InputAmount/month);
+            SavingAmount.push("MonthlyAmount", MonthlyAmount);
+        }
+
+        function CheckFrequency(SavingAmount){
+            if(frequency.value == "รายวัน"){
+                    calPercent(SavingAmount[5]);
+            } else if(frequency.value == "รายสัปดาห์"){
+                    calPercent(SavingAmount[3]);
+            } else if(frequency.value == "รายสัปดาห์"){
+                    calPercent(SavingAmount[1]);
+            }
+        }
+        CheckFrequency(SavingAmount);
+
+        function calPercent(calamount) {
             var amount = document.getElementById('amount').value;
             var startdate = document.getElementById('startdate').value;
             var enddate = document.getElementById('enddate').value;
             var freq = document.getElementById('frequency').value;
-            console.log(freq);
+            var percent = 0;
+            
+            // if(freq == "รายวัน"){
+            //     percent = (allGoals.getItem("DayDiff")*calamount)/100;
+            //     console.log("dpercent", percent);
+            // } else if(frequency.value == "รายสัปดาห์"){
+            //     percent = (allGoals.getItem("WeekDiff")*calamount)/100;
+            //     console.log("wpercent", percent);
+            // } else if(frequency.value == "รายสัปดาห์"){
+            //     percent = (allGoals.getItem("MonthDiff")*calamount)/100;
+            //     console.log("mpercent", percent);
+            // }
 
             var c_date = new Date();
             var e_date = new Date(enddate);
@@ -284,21 +388,15 @@
             var s_date = new Date(startdate);
             var t_dif = c_date.getTime() - s_date.getTime();
             var t_diff2 = e_date.getTime() - c_date.getTime();
-            // console.log(t_diff2)
+
             var day_count = (t_dif / (1000 * 3600 * 24)+1);
             var week_count = ((t_dif / (1000 * 3600 * 24))/7)+1;
             var month_count = ((t_dif / (1000 * 3600 * 24))/30);
 
-            console.log("day_count", day_count);
-            console.log("week_count", week_count);
-            console.log("month_count", month_count);
-
             var remain_day = t_diff2 / (1000 * 3600 * 24);
             var remain_week = remain_day/7;
             var remain_month = remain_day/30;
-            console.log("remain_day", remain_day);
-            console.log("remain_week", remain_week);
-            console.log("remain_month", remain_month);
+            
             var store_amountd = saving_amount * parseInt(day_count);
             var store_amountw = saving_amount * parseInt(week_count);
             var store_amountm = saving_amount * parseInt(month_count);
@@ -350,14 +448,12 @@
         }
 
         function getNowDate() {
-            var d = new Date();
             var currentDate = new Date();
-            var day = currentDate.getDate();
-            var month = currentDate.getMonth() + 1;
-            var year = currentDate.getFullYear();
-            document.getElementById('showdate').innerHTML = day + "/" + month + "/" + year;
+            document.getElementById('showdate').innerHTML = currentDate.getDate() + "/" + (currentDate.getMonth()+1) + "/" + currentDate.getFullYear();
         }
-        getNowDate()
+        getNowDate();
+        addItem(SavingAmount);
+        
     </script>
 </body>
 
