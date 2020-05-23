@@ -14,15 +14,15 @@
 
     <title>เก็บตังค์ | KepTung</title>
 
+    <!-- css -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css?family=Kanit&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
     <style>
         body {
-            /* padding: 1em; */
             background: #eeeeee;
-            /* background-color: #404040; */
             font-family: 'Kanit', sans-serif;
         }
 
@@ -38,7 +38,7 @@
 
         .page {
             padding: 1em;
-            padding-top: 60px;
+            padding-top: 40px;
         }
 
         button {
@@ -76,7 +76,7 @@
         }
 
         #page-setting,
-        #page-saving {
+        #page-detail {
             display: none;
         }
 
@@ -94,9 +94,12 @@
         }
 
         #backbtn{
-            margin-top: 5px;
             background-color: #eeeeee;
             color: #000;
+        }
+
+        #removeItembtn, #removeAll{
+            padding: 1em;
         }
     </style>
 </head>
@@ -106,44 +109,51 @@
         <nav>KepTung 💰</nav>
         
         <div id="page-home" class="page">
-            <h2>เป้าหมายเก็บตังค์</h2>
+            <h3 style="margin-top: 10px;">เป้าหมายเก็บตังค์</h3>
             <div id="list_goal"></div>
-            
-            <button id="Addbtn" onclick="mockupClick('page-home','page-setting')">เพิ่มเป้าหมาย</button>
+            <div class="row">
+                <div class="col-6">
+                    <button class="btn btn-outline-danger" id="removeAll" onclick="removeAll()">ลบทั้งหมด</button>
+                </div>
+                <div class="col-6">
+                    <button id="Addbtn" onclick="mockupClick('page-home','page-setting')">เพิ่มเป้าหมาย</button>
+                </div>
+            </div>
         </div>
 
         <div id="page-setting" class="page">
-            <h3>ตั้งเป้าเก็บตังค์</h3>
+            <h3 style="margin-top: 10px;">ตั้งเป้าเก็บตังค์</h3>
             <input type='text' id='goal' placeholder='ชื่อเป้าหมาย'></input>
-            <input type='number' id='amount' placeholder='จำนวนเงิน'></input>
+            <input type="number" id='amount' placeholder='จำนวนเงิน'></input>
             <div class="row">
                 <div class="col-6">
                     <label for="Inputstartdate">วันเริ่มต้น</label>
-                    <input type='date' id='startdate' onchange="calDayDiff()"></input>
+                    <input type='date' id='startdate'></input>
                 </div>
                 <div class="col-6">
                     <label for="inputenddate">วันสิ้นสุด</label>
-                    <input type='date' id='enddate' onchange="calDayDiff()"></input>
+                    <input type='date' id='enddate'></input>
                 </div>
             </div>
             <label for="inputfrequency">ความถี่</label>
             <select id="frequency" class="form-control">
+                <!-- onchange="Calculate()" -->
                 <option value="รายวัน">รายวัน</option>
                 <option value="รายสัปดาห์">รายสัปดาห์</option>
                 <option value="รายเดือน">รายเดือน</option>
             </select><br>
-            <button onclick="addItem()">บันทึก</button>
-            <button id="backbtn"onclick="mockupClick('page-setting','page-home')">กลับหน้าหลัก</button>
+            <button onclick="Calculate()">บันทึก</button>
+            <button id="backbtn" onclick="mockupClick('page-setting','page-home')">กลับหน้าหลัก</button>
         </div>
 
-        <div id="page-saving" class="page">
-            <h1 id='curgoal' class="text-center"></h1>
+        <div id="page-detail" class="page">
+            <h1 style="margin: 10px;" id='curgoal' class="text-center"></h1>
             <div class="row">
                 <div class="col-6">
                     <div id='showdate'></div>
                     <div id='day_count'></div>
                 </div>
-                <p id='countdowndate' class="text-right col-6"></p>
+                <p id='countdowndate' class="text-right col-6">เหลืออีก <br></p>
             </div>
 
             <div class="saving">
@@ -154,307 +164,217 @@
             <div class="detail">
                 <div class="progress">
                     <div id='progress_bar' class="progress-bar progress-bar-striped bg-success" role="progressbar"
-                        aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">7%</div>
+                        aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
                 <div class="row">
                     <div id='store_amount' class="col-6"></div>
                     <div id="goal_amount" class="col-6" style="text-align:right;"></div>
                 </div>
             </div>
-            <button onclick="mockupClick('page-saving','page-home')">กลับหน้าหลัก</button>
+            <div class="row">
+                <div class="col-6">
+                    <button id="backbtn" onclick="mockupClick('page-detail','page-home')">กลับหน้าหลัก</button>
+                </div>
+                <script>
+                    var getIndex = 0;
+                </script>
+                <div class="col-6">
+                    <button type="button" class="btn btn-outline-danger" id="removeItembtn" onclick="removeGoal(getIndex)">ลบรายการนี้</button>
+                </div>
+            </div>
         </div>
     </div>
     <div class="footer text-right mt-2 p-2 text-dark text-center">
-        <small>*เศษทศนิยมจะถูกปัดขึ้นอัตโนมัติ</small><br />
-        <!-- <small>KepTung by ckrittima</small> -->
+        <small>*เศษทศนิยมจะถูกปัดขึ้นอัตโนมัติ</small><br>
         <small>KepTung by <a href="https://web.facebook.com/aomxsyn" style="color:#13A699">aomsyn</a> 🧃</small>
     </div>
 
     <script>
-        if (localStorage.getItem("allGoals") === null){
-            localStorage.setItem("allGoals", "[]");
-        }
-        allGoals = JSON.parse(localStorage.allGoals);
-        var SavingAmount = [];
-        var diff = [];
-
-        function addItem(){
-            let title = document.getElementById("goal").value;
-            let amount = document.getElementById("amount").value;
-            let startdate = document.getElementById("startdate").value;
-            let enddate = document.getElementById("enddate").value;
-            let freq = document.getElementById('frequency').value;
-            if (title != "" && amount > 0 && startdate != "" && enddate != "" && freq != ""){
-                allGoals.push({"title": title, "amount": amount, "frequency": freq, "startDate": startdate, "endDate": enddate});
-                calculate();
-                document.getElementById("goal").value = "";
-                document.getElementById("amount").value = "";
-                document.getElementById("startdate").value = "";
-                document.getElementById("enddate").value = "";
-                document.getElementById('frequency').value = "";
-                displayGoal()
-            }
-        }
-
-        function displayGoal(){
-            allGoals.forEach(element => {
-                list_goal.innerHTML += `
-				<div id="goal_item" class="row" ondblclick="removeGoal(${element.index-1})" onclick="showdetail()">
-                    <div class="col-6">
-                    <h3>${element.title}</h3>
-                    <small>${element.frequency}</small>
-                    </div>
-                    <div class="col-6"><h3 class="text-right">${element.amount}</h3>
-				</div>
-                `;
-            });
-            console.log(allGoals);
-			localStorage.setItem("allGoals", JSON.stringify(allGoals));
-        }
-        displayGoal()
-
-        function removeGoal(index){
-			remove = allGoals.splice(index, 1);
-            displayGoal();
-		}
-
-        let date = new Date();
-        document.getElementById("startdate").max = `${date.getFullYear()}-${date.getMonth()}-${date.getDay()}`;
-        document.getElementById("enddate").min = new Date();
-
-
-        function mockupClick(pageToHide, pageToShow) {
-            document.querySelector('#' + pageToHide).style.display = "none ";
-            document.querySelector('#' + pageToShow).style.display = "block ";
-        }
-
-        function calculate() {
-            var amount = document.getElementById('amount').value;
-            var startdate = document.getElementById('startdate').value;
-            var enddate = document.getElementById('enddate').value;
-            var freq = document.getElementById('frequency').value;
-
-            var date1 = new Date(startdate);
-            // console.log('date1', date1);
-            var date2 = new Date(enddate);
-            var time_dif = date2.getTime() - date1.getTime();
-            var day_diff = (time_dif / (1000 * 3600 * 24))+1;
-
-            let saving_amount = 0;
-            if (freq == 'รายวัน') {
-                saving_amount = Math.ceil(amount / day_diff);
-            } else if (freq == 'รายสัปดาห์') {
-                let weekly = Math.ceil(day_diff / 7);
-                // console.log("weekly", weekly);
-                saving_amount = Math.ceil(amount / weekly);
-                // console.log(day_diff);
-                // console.log(weekly);
-                // console.log(saving_amount); 
-            } else if (freq == 'รายเดือน') {
-                let monthly = day_diff / 30;
-                saving_amount = Math.ceil(amount / monthly);
-            }
-            document.getElementById('saving_amount').innerHTML = saving_amount;
-            calPercent(saving_amount)
-            showdetail();
-            mockupClick('page-setting', 'page-saving');
-        }
-
-        function getDate(start, end){
-                    let startList = [];
-                    let endList = [];
-                    startList.push(start.getFullYear(), start.getMonth()+1, start.getDate());
-                    endList.push(end.getFullYear(), end.getMonth()+1, end.getDate());
-                    CalMonthDiff(startList, endList);
-                    calWeekDiff(new Date(startList), new Date(endList));
-                    // console.log(startList);
-                    // console.log(endList);
-                    // console.log(CalMonthDiff(startList, endList));
-        }
         
-        function calDayDiff(){
-            if (startdate.value != "" && enddate.value != ""){
-                let StartDate = new Date(startdate.value);
-                let EndDate = new Date(enddate.value);
-                let CurrentDate = new Date();
-                let DayPass = 0;
-                let DayDiff = 0;
-                let DayLeft = 0;
+        if (localStorage.getItem("kepTungData") === null){
+            localStorage.setItem("kepTungData", "[]");
+        }
+        kepTungData = JSON.parse(localStorage.kepTungData);
+
+        var calAmount = 0;
+        var calPass = 0;
+        var calDiff = 0;
+        var calLeft = 0;
+
+    // insert_data_into_localStorage
+    function addItem(){
+        let title = document.getElementById("goal").value;
+        let amount = document.getElementById("amount").value;
+        let startdate = document.getElementById("startdate").value;
+        let enddate = document.getElementById("enddate").value;
+        let freq = document.getElementById('frequency').value;
+        if (title != "" && amount > 0 && startdate != "" && enddate != "" && freq != ""){
+            kepTungData.push({"title": title, "amount": amount, "frequency": freq, "startDate": startdate, "endDate": enddate, "calDiff": calDiff, "calPass": calPass, "calLeft": calLeft, "calAmount": calAmount});
+            document.getElementById("goal").value = "";
+            document.getElementById("amount").value = "";
+            document.getElementById("startdate").value = "";
+            document.getElementById("enddate").value = "";
+            
+            mockupClick('page-setting', 'page-home');
+            displayGoal()
+        } else {
+            alert("กรุณากรอกข้อมูลให้ถูกต้อง");
+        }
+    }
+
+    // show_all_goal
+    function displayGoal(){
+        kepTungData.forEach(element => {
+            list_goal.innerHTML += `
+            <div id="goal_item" class="row" onclick="showdetail()">
+                <div class="col-6">
+                <h3>${element.title}</h3>
+                <small>${element.frequency}</small>
+                </div>
+                <div class="col-6"><h3 class="text-right">${element.amount}</h3>
+            </div>
+            `;
+        });
+        console.log(kepTungData);
+        localStorage.setItem("kepTungData", JSON.stringify(kepTungData));
+    }
+    displayGoal()
+
+    // remove_selected_goal
+    function removeGoal(index){
+        if(confirm('เมื่อลบแล้วจะไม่สามารถกู้คืนได้อีก ยืนยันการลบหรือไม่')){
+            remove = kepTungData.splice(index, 1);
+            mockupClick('page-detail','page-home')
+            displayGoal(); 
+        }
+    }
+
+    // remove_all_goal_from_localStorage
+    function removeAll(){
+        if(confirm(`เมื่อลบเป้าหมายทั้งหมด จะไม่สามารถกู้คืนได้อีก`)){
+            localStorage.clear();
+            location.href=location.href
+        }
+    }
+
+    // change_page
+    function mockupClick(pageToHide, pageToShow) {
+        document.querySelector('#' + pageToHide).style.display = "none";
+        document.querySelector('#' + pageToShow).style.display = "block";
+    }
+
+    // calculate_saving_amount
+    function Calculate(){
+        var startList = [];
+        var endList = [];
+
+        var InputAmount = parseInt(amount.value);
+        console.log(InputAmount);
+        var frequency = document.getElementById("frequency").value;
+
+        var StartDate = new Date(startdate.value);
+        var EndDate = new Date(enddate.value);
+        var CurrentDate = new Date();
+        
+        startList.push(StartDate.getFullYear(), StartDate.getMonth()+1, StartDate.getDate());
+        endList.push(EndDate.getFullYear(), EndDate.getMonth()+1, EndDate.getDate());
+        console.log(startList);
+
+        if(frequency == "รายวัน"){
+            console.log(frequency);
+                var DayPass = 0;
+                var DayDiff = 0;
+                var DayLeft = 0;
+                var DailyAmount = 0;
+
                 if (EndDate >= StartDate){
                     DayDiff = (EndDate - StartDate);
                     DayDiff = DayDiff/(3600 * 24 * 1000)+1;
-                    // console.log(DayDiff);
+                    calDiff = DayDiff;
                 }
-                DayPass = Math.ceil((CurrentDate - StartDate)/(3600 * 24 * 1000));
-                // DayLeft = Math.ceil((EndDate - CurrentDate)/(3600 * 24 * 1000));
-                DayLeft = DayDiff - DayPass;
-                console.log("DayPass", DayPass);
-                console.log("DayLeft", DayLeft);
-                getDate(StartDate, EndDate);
-                calDailyAmount(DayDiff);
-                diff.push("DayDiff", DayDiff, "DayPass", DayPass, "DayLeft", DayLeft);
-            }
-        }
-        console.log(allGoals);
-        function calWeekDiff(startDate, endDate){
-            var CurrentDate = new Date();
-            var WeekDiff = Math.round((endDate - startDate) / (7 * 24 * 3600 * 1000));
-            var WeekPass = Math.round((CurrentDate - startDate) / (7 * 24 * 3600 * 1000));
-            var WeekLeft = WeekDiff-WeekPass;
-            diff.push("WeekDiff", WeekDiff, "WeekPass", WeekPass, "WeekLeft", WeekLeft);
-            // console.log("c", CurrentDate);
-            // console.log("s", startDate);
-            // console.log("e", endDate);
-            // console.log("WeekPass", WeekPass);
-            // console.log("WeekLeft", WeekLeft);
-            calWeeklyAmount(WeekDiff);
-        }
 
-        function CalMonthDiff(startDate, endDate){
-            var MonthDiff;
-            var currentDate = new Date();
-            console.log("startDate", startDate);
-            console.log("endDate", endDate);
-            MonthDiff = (endDate[0] - startDate[0]) * 12;
-            MonthDiff -= startDate[1];
-            MonthDiff += endDate[1];
+                DayPass = Math.ceil((CurrentDate - StartDate)/(3600 * 24 * 1000));
+                calPass = DayPass;
+                DayLeft = DayDiff - DayPass;
+                calLeft = DayLeft;
+                
+                DailyAmount = Math.ceil(InputAmount/DayDiff);
+                calAmount = DailyAmount;
+                console.log('daily');
+
+        } else if(frequency == "รายสัปดาห์"){
+            var WeekDiff = Math.round((EndDate - StartDate) / (7 * 24 * 3600 * 1000));
+            calDiff = WeekDiff;
+
+            var WeekPass = Math.round((CurrentDate - StartDate) / (7 * 24 * 3600 * 1000));
+            calPass = WeekPass;
+
+            var WeekLeft = WeekDiff - WeekPass;
+            calLeft = WeekLeft;
+
+            var WeeklyAmount = Math.ceil(InputAmount/WeekDiff);
+            calAmount = WeeklyAmount;
+            console.log('weekly');
+
+        } else if(frequency == "รายเดือน"){
+            var MonthDiff = 0;
+            MonthDiff = (endList[0] - startList[0]) * 12;
+            MonthDiff -= startList[1];
+            MonthDiff += endList[1];
+
             if(MonthDiff <= 0){
                 MonthDiff = 0;
             } else {
                 MonthDiff = MonthDiff;
             }
-            MonthPass = (currentDate.getFullYear() - startDate[0])*12;
-            MonthPass -= startDate[1];
-            MonthPass += (currentDate.getMonth()+1);
+
+            calDiff = MonthDiff;
+            MonthPass = (CurrentDate.getFullYear() - startList[0])*12;
+            MonthPass -= startList[1];
+            MonthPass += (CurrentDate.getMonth()+1);
+            calPass = MonthPass;
             MonthLeft = MonthDiff - MonthPass;
-            diff.push("MonthDiff", MonthDiff, "MonthPass", MonthPass, "MonthLeft", MonthLeft);
-            calMonthlyAmount(MonthDiff);
-            console.log("MonthDiff", MonthDiff);
-            console.log("MonthPass", MonthPass);
-            console.log("MonthLeft", MonthLeft);
-        }
-        console.log(diff);
-        function calDailyAmount(day){
-            var InputAmount = document.getElementById('amount').value;
-            var DailyAmount = Math.ceil(InputAmount/day);
-            SavingAmount.push("DailyAmount", DailyAmount);
-            console.log(SavingAmount);
-        }
+            calLeft = MonthLeft;
 
-        function calWeeklyAmount(week){
-            var InputAmount = document.getElementById('amount').value;
-            var WeeklyAmount = Math.ceil(InputAmount/week);
-            SavingAmount.push("WeeklyAmount", WeeklyAmount);
+            var MonthlyAmount = Math.ceil(InputAmount/MonthDiff);
+            calAmount = MonthlyAmount;
         }
+        addItem();
+    }
 
-        function calMonthlyAmount(month){
-            var InputAmount = document.getElementById('amount').value;
-            var MonthlyAmount = Math.ceil(InputAmount/month);
-            SavingAmount.push("MonthlyAmount", MonthlyAmount);
-        }
-
-        function CheckFrequency(SavingAmount){
-            if(frequency.value == "รายวัน"){
-                    calPercent(SavingAmount[5]);
-            } else if(frequency.value == "รายสัปดาห์"){
-                    calPercent(SavingAmount[3]);
-            } else if(frequency.value == "รายสัปดาห์"){
-                    calPercent(SavingAmount[1]);
+    //show_goal_detail
+    function showdetail() {
+            kepTungData.forEach(item => {
+            curgoal.innerHTML = `${item.title}`;
+            showfrequency.innerHTML = `(${item.frequency})`;
+            goal_amount.innerHTML = `${item.amount}`;
+            if(item.frequency == "รายวัน"){
+                countdowndate.innerHTML = `เหลืออีก<br>${item.calLeft} วัน`;
+                day_count.innerHTML = `D-${item.calPass}`;
+            } else if(item.frequency == "รายสัปดาห์"){
+                countdowndate.innerHTML = `เหลืออีก<br>${item.calLeft} สัปดาห์`;
+                day_count.innerHTML = `W-${item.calPass}`;
+            } else {
+                countdowndate.innerHTML = `เหลืออีก<br>${item.calLeft} เดือน`;
+                day_count.innerHTML = `M-${item.calPass}`;
             }
-        }
-        CheckFrequency(SavingAmount);
 
-        function calPercent(calamount) {
-            var amount = document.getElementById('amount').value;
-            var startdate = document.getElementById('startdate').value;
-            var enddate = document.getElementById('enddate').value;
-            var freq = document.getElementById('frequency').value;
-            var percent = 0;
-            
-            // if(freq == "รายวัน"){
-            //     percent = (allGoals.getItem("DayDiff")*calamount)/100;
-            //     console.log("dpercent", percent);
-            // } else if(frequency.value == "รายสัปดาห์"){
-            //     percent = (allGoals.getItem("WeekDiff")*calamount)/100;
-            //     console.log("wpercent", percent);
-            // } else if(frequency.value == "รายสัปดาห์"){
-            //     percent = (allGoals.getItem("MonthDiff")*calamount)/100;
-            //     console.log("mpercent", percent);
-            // }
+            saving_amount.innerHTML = `${item.calAmount}`;
+            store_amount.innerHTML = `${item.calAmount*item.calPass}`;
+            progress_bar.style.width = `${((item.calAmount*item.calPass)/parseInt(amount))*100}` + '%';
+            progress_bar.innerHTML = `${((item.calAmount*item.calPass)/parseInt(amount))*100}` + '%';
+            getIndex =  `${item.index-1}`;
+            mockupClick('page-home', 'page-detail');
+        });
+    }
 
-            var c_date = new Date();
-            var e_date = new Date(enddate);
-            var currentDate = c_date.getDate() + '/' + (c_date.getMonth() + 1) + '/' + c_date.getFullYear();
-            var s_date = new Date(startdate);
-            var t_dif = c_date.getTime() - s_date.getTime();
-            var t_diff2 = e_date.getTime() - c_date.getTime();
+    //get_today_date
+    function getNowDate() {
+        var currentDate = new Date();
+        document.getElementById('showdate').innerHTML = currentDate.getDate() + "/" + (currentDate.getMonth()+1) + "/" + currentDate.getFullYear();
+    }
+    getNowDate();
 
-            var day_count = (t_dif / (1000 * 3600 * 24)+1);
-            var week_count = ((t_dif / (1000 * 3600 * 24))/7)+1;
-            var month_count = ((t_dif / (1000 * 3600 * 24))/30);
-
-            var remain_day = t_diff2 / (1000 * 3600 * 24);
-            var remain_week = remain_day/7;
-            var remain_month = remain_day/30;
-            
-            var store_amountd = saving_amount * parseInt(day_count);
-            var store_amountw = saving_amount * parseInt(week_count);
-            var store_amountm = saving_amount * parseInt(month_count);
-
-            if(freq == "รายวัน"){
-                var percent = ((store_amountd / amount) * 100).toFixed(0);
-                document.getElementById('store_amount').innerHTML = parseInt(store_amountd);
-                document.getElementById('day_count').innerHTML = '<p>D-' + day_count.toFixed(0) + '</p>';
-                if (remain_day < 0){
-                    remain_day = 0;
-                    document.getElementById('countdowndate').innerHTML = 'เหลืออีก <br>' + remain_day.toFixed(0) + ' วัน';
-                } else {
-                    document.getElementById('countdowndate').innerHTML = 'เหลืออีก <br>' + remain_day.toFixed(0) + ' วัน';
-                }
-            } else if(freq == "รายสัปดาห์"){
-                var percent = ((store_amountw / amount) * 100).toFixed(0);
-                document.getElementById('store_amount').innerHTML = parseInt(store_amountw);
-                document.getElementById('day_count').innerHTML = '<p>W-' + week_count.toFixed(0) + '</p>';
-                if (remain_day < 0){
-                    remain_day = 0;
-                    document.getElementById('countdowndate').innerHTML = 'เหลืออีก <br>' + remain_week.toFixed(0) + ' สัปดาห์';
-                } else {
-                    document.getElementById('countdowndate').innerHTML = 'เหลืออีก <br>' + remain_week.toFixed(0) + ' สัปดาห์';
-                }
-            } else if(freq == "รายเดือน"){
-                var percent = ((store_amountm / amount) * 100).toFixed(0);
-                document.getElementById('store_amount').innerHTML = parseInt(store_amountm);
-                document.getElementById('day_count').innerHTML = '<p>M-' + month_count.toFixed(0) + '</p>';
-                if (remain_day < 0){
-                    remain_day = 0;
-                    document.getElementById('countdowndate').innerHTML = 'เหลืออีก <br>' + remain_month.toFixed(0) + ' เดือน';
-                } else {
-                    document.getElementById('countdowndate').innerHTML = 'เหลืออีก <br>' + remain_month.toFixed(0) + ' เดือน';
-                }
-            
-            document.getElementById('progress_bar').style.width = percent + '%';
-            document.getElementById('progress_bar').innerHTML = percent + '%';
-            
-            }
-        }
-
-        function showdetail() {
-            var title = document.getElementById('goal').value;
-            var amount = document.getElementById('amount').value;
-            var freq = document.getElementById('frequency').value;
-            document.getElementById('curgoal').innerHTML = title;
-            document.getElementById('showfrequency').innerHTML = '(' + freq + ')';
-            document.getElementById('goal_amount').innerHTML = amount;
-        }
-
-        function getNowDate() {
-            var currentDate = new Date();
-            document.getElementById('showdate').innerHTML = currentDate.getDate() + "/" + (currentDate.getMonth()+1) + "/" + currentDate.getFullYear();
-        }
-        getNowDate();
-        addItem(SavingAmount);
-        
     </script>
 </body>
-
 </html>
