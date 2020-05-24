@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <meta http-equiv=" X-UA-Compatible" content="ie=edge">
 
-    <meta name="theme-color" content="#13A699" />
+    <link rel="apple-touch-icon" sizes="180x180" href="icon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="icon/favicon-16x16.png">
+    <link rel="manifest" href="icon/site.webmanifest">
+    <link rel="icon" type="image/png" sizes="32x32" href="icon/favicon-32x32.png">
 
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="KepTung">
@@ -19,6 +22,18 @@
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css?family=Kanit&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <!-- splash_screen -->
+    <link href="splashscreens/iphone5_splash.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
+    <link href="splashscreens/iphone6_splash.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
+    <link href="splashscreens/iphoneplus_splash.png" media="(device-width: 621px) and (device-height: 1104px) and (-webkit-device-pixel-ratio: 3)" rel="apple-touch-startup-image" />
+    <link href="splashscreens/iphonex_splash.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" rel="apple-touch-startup-image" />
+    <link href="splashscreens/iphonexr_splash.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
+    <link href="splashscreens/iphonexsmax_splash.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)" rel="apple-touch-startup-image" />
+    <link href="splashscreens/ipad_splash.png" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
+    <link href="splashscreens/ipadpro1_splash.png" media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
+    <link href="splashscreens/ipadpro3_splash.png" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
+    <link href="splashscreens/ipadpro2_splash.png" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
 
     <style>
         body {
@@ -143,7 +158,7 @@
                 <option value="รายเดือน">รายเดือน</option>
             </select><br>
             <button onclick="Calculate()">บันทึก</button>
-            <button id="backbtn" onclick="mockupClick('page-setting','page-home')">กลับหน้าหลัก</button>
+            <button style="margin-top: 10px;" id="backbtn" onclick="mockupClick('page-setting','page-home')">กลับหน้าหลัก</button>
         </div>
 
         <div id="page-detail" class="page">
@@ -209,7 +224,7 @@
         let enddate = document.getElementById("enddate").value;
         let freq = document.getElementById('frequency').value;
         if (title != "" && amount > 0 && startdate != "" && enddate != "" && freq != ""){
-            kepTungData.push({"title": title, "amount": amount, "frequency": freq, "startDate": startdate, "endDate": enddate, "calDiff": calDiff, "calPass": calPass, "calLeft": calLeft, "calAmount": calAmount});
+            kepTungData.push({"title": title, "amount": parseInt(amount), "frequency": freq, "startDate": startdate, "endDate": enddate, "calDiff": calDiff, "calPass": calPass, "calLeft": calLeft, "calAmount": calAmount});
             document.getElementById("goal").value = "";
             document.getElementById("amount").value = "";
             document.getElementById("startdate").value = "";
@@ -244,8 +259,8 @@
     function removeGoal(index){
         if(confirm('เมื่อลบแล้วจะไม่สามารถกู้คืนได้อีก ยืนยันการลบหรือไม่')){
             remove = kepTungData.splice(index, 1);
-            mockupClick('page-detail','page-home')
             displayGoal(); 
+            mockupClick('page-detail','page-home')
         }
     }
 
@@ -361,8 +376,10 @@
 
             saving_amount.innerHTML = `${item.calAmount}`;
             store_amount.innerHTML = `${item.calAmount*item.calPass}`;
-            progress_bar.style.width = `${((item.calAmount*item.calPass)/parseInt(amount))*100}` + '%';
-            progress_bar.innerHTML = `${((item.calAmount*item.calPass)/parseInt(amount))*100}` + '%';
+            var percent = Math.ceil(((`${item.calAmount}`*`${item.calPass}`)/`${item.amount}`*100));
+            console.log(percent);
+            progress_bar.style.width = percent + '%';
+            progress_bar.innerHTML = percent + '%';
             getIndex =  `${item.index-1}`;
             mockupClick('page-home', 'page-detail');
         });
