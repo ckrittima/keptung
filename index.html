@@ -177,7 +177,6 @@
             </div>
             <label for="inputfrequency">ความถี่</label>
             <select id="frequency" class="form-control">
-                <!-- onchange="Calculate()" -->
                 <option value="รายวัน">รายวัน</option>
                 <option value="รายสัปดาห์">รายสัปดาห์</option>
                 <option value="รายเดือน">รายเดือน</option>
@@ -224,9 +223,11 @@
     </div>
 
     <script>
-
+    
+    // icon
     feather.replace()
-        
+    
+    // set_localStorage
     if (localStorage.getItem("KeptungData") === null){
         localStorage.setItem("KeptungData", "[]");
     }
@@ -252,14 +253,20 @@
             document.getElementById("startdate").value = "";
             document.getElementById("enddate").value = "";
             
-            mockupClick('page-setting', 'page-home');
-            displayGoal()
-            location.href=location.href
+
+            if (new Date(startdate) > new Date(enddate)) {
+                alert("กรุณากรอกวันที่ให้ถูกต้อง");
+            } else {
+                mockupClick('page-setting', 'page-home');
+                displayGoal()
+                location.href=location.href
+            }
         } else {
             alert("กรุณากรอกข้อมูลให้ถูกต้อง");
         }
     }
 
+    // date_change
     function handleDataChange(type, e) {
         if (type == 'startdate') {
             enddate.min = e
