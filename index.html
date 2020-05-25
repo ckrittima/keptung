@@ -34,6 +34,8 @@
     <link href="https://fonts.googleapis.com/css?family=Kanit&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
+    <script src="https://unpkg.com/feather-icons"></script>
+
     <style>
         body {
             background: #eeeeee;
@@ -56,7 +58,6 @@
         }
 
         button {
-            background: #13A699;
             border-radius: .3em;
             font-size: 1rem;
             color: white;
@@ -95,13 +96,13 @@
         }
 
         #list_goal {
-            height: 280px;
+            height: 340px;
             overflow-y: auto;
             overflow-x: hidden;
         }
 
         #page-home, #page-detail {
-            padding-bottom: 0px;
+            padding-bottom: 5px;
         }
 
         #goal_item{
@@ -113,6 +114,9 @@
             border-radius: 5px;
         }
 
+        .btn {
+            color: white;
+        }
         .btn-green {
             background: #13A699;
             color:white;
@@ -121,6 +125,11 @@
         .btn-grey {
             background-color: #eeeeee;
             color: #000;
+        }
+
+        .btn-link {
+            border: solid 1px;
+            margin: 5px 0px 5px 0px;
         }
 
         .col-4 {
@@ -132,6 +141,10 @@
         .col-8 {
             padding-right: 0px;
         }
+
+        svg {
+            width: 20px;
+        }
     </style>
 </head>
 
@@ -142,8 +155,10 @@
         <div id="page-home" class="page">
             <h3 style="margin-top: 10px;">เป้าหมายเก็บตังค์</h3>
             <div id="list_goal"></div>
-            <button class="btn btn-green" id="Addbtn" onclick="mockupClick('page-home','page-setting')">เพิ่มเป้าหมาย</button>
-            <button class="btn btn-link text-danger" id="removeAll" onclick="removeAll()">ลบทั้งหมด</button>
+            <button class="btn btn-green" id="Addbtn" onclick="mockupClick('page-home','page-setting')">
+                <i data-feather="file-plus"></i> เพิ่มเป้าหมาย</button>
+            <button class="btn btn-link text-danger" id="removeAll" onclick="removeAll()">
+                <i data-feather="trash-2"></i> ลบทั้งหมด</button>
         </div>
 
         <div id="page-setting" class="page">
@@ -153,11 +168,11 @@
             <div class="row">
                 <div class="col-6">
                     <label for="Inputstartdate">วันเริ่มต้น</label>
-                    <input type='date' id='startdate'></input>
+                    <input type='date' id='startdate' onchange="handleDataChange('startdate', this.value)"></input>
                 </div>
                 <div class="col-6">
                     <label for="inputenddate">วันสิ้นสุด</label>
-                    <input type='date' id='enddate'></input>
+                    <input type='date' id='enddate' onchange="handleDataChange('enddate', this.value)"></input>
                 </div>
             </div>
             <label for="inputfrequency">ความถี่</label>
@@ -167,8 +182,9 @@
                 <option value="รายสัปดาห์">รายสัปดาห์</option>
                 <option value="รายเดือน">รายเดือน</option>
             </select><br>
-            <button class="btn btn-green" onclick="Calculate()">บันทึก</button>
-            <button class="btn btn-grey" style="margin-top: 10px;" id="backbtn" onclick="mockupClick('page-setting','page-home')">กลับหน้าหลัก</button>
+            <button class="btn btn-green" onclick="Calculate()"><i data-feather="save"></i> บันทึก</button>
+            <button class="btn btn-grey" style="margin-top: 10px;" id="backbtn" onclick="mockupClick('page-setting','page-home')">
+                <i data-feather="menu"></i> กลับหน้าหลัก</button>
         </div>
 
         <div id="page-detail" class="page">
@@ -196,8 +212,10 @@
                     <div id="goal_amount" class="col-6" style="text-align:right;"></div>
                 </div>
             </div>
-            <button class="btn btn-grey" id="backbtn" onclick="mockupClick('page-detail','page-home')">กลับหน้าหลัก</button>
-            <button class="btn btn-link text-danger" type="button" class="btn btn-outline-danger" id="removeItembtn" onclick="removeGoal(getIndex)">ลบรายการนี้</button>
+            <button class="btn btn-grey" id="backbtn" onclick="mockupClick('page-detail','page-home')">
+                <i data-feather="menu"></i> กลับหน้าหลัก</button>
+            <button class="btn btn-link text-danger" type="button" class="btn btn-outline-danger" id="removeItembtn" onclick="removeGoal(getIndex)">
+                <i data-feather="trash-2"></i> ลบรายการนี้</button>
         </div>
     </div>
     <div class="footer text-right mt-2 p-2 text-dark text-center">
@@ -206,6 +224,8 @@
     </div>
 
     <script>
+
+    feather.replace()
         
     if (localStorage.getItem("KeptungData") === null){
         localStorage.setItem("KeptungData", "[]");
@@ -234,8 +254,17 @@
             
             mockupClick('page-setting', 'page-home');
             displayGoal()
+            location.href=location.href
         } else {
             alert("กรุณากรอกข้อมูลให้ถูกต้อง");
+        }
+    }
+
+    function handleDataChange(type, e) {
+        if (type == 'startdate') {
+            enddate.min = e
+        } else {
+            startdate.max = e
         }
     }
 
@@ -247,23 +276,27 @@
             let sdate = start.getDate() + '/' + (start.getMonth()+1) + '/' + start.getFullYear();
             let edate = end.getDate() + '/' + (end.getMonth()+1) + '/' + end.getFullYear();
             list_goal.innerHTML += `
-            <div id="goal_item" onclick="showdetail(${index})">
-                <div class="row">
-                    <div class="col-6">
-                        <h5>${element.title}</h5>
-                    </div>
-                    <div class="col-6">
-                        <h5 class="text-right">${element.amount}</h5>
-                    </div>
-                    <div class="col-8">
-                        <small>${sdate} - ${edate}</small>
-                    </div>
-                    <div class="col-4">
-                        <small class="text-center">(${element.frequency})</small>
+                <div id="goal_item" class="${element.calAmount*element.calPass >= element.amount ? 'text-success': ""}" onclick="showdetail(${index})">
+                    <div class="row">
+                        <div class="col-6">
+                            <h5>${element.title}</h5>
+                        </div>
+                        <div class="col-6">
+                            <h5 class="text-right">${element.amount}฿</h5>
+                        </div>
+                        <div class="col-8">
+                            <small>${sdate} - ${edate}</small>
+                        </div>
+                        <div class="col-4">
+                            <small class="text-right">(${element.frequency == 'รายวัน' ? element.calDiff + ' วัน' : element.frequency == 'รายสัปดาห์' ? element.calDiff + ' สัปดาห์' : element.calDiff + ' เดือน'})</small>
+                        </div>
+                        <div class="col-8">
+                            <small>${element.calAmount*element.calPass >= element.amount ? '🎉 Success': '🚧 In progress'}</small>
+                        </div>
                     </div>
                 </div>
-            </div>
-            `;
+                `;
+            
         });
         
         console.log(KeptungData);
@@ -313,7 +346,7 @@
 
         if(frequency == "รายวัน"){
             console.log(frequency);
-                var DayPass = 0;
+                var DayPass = 0; 
                 var DayDiff = 0;
                 var DayLeft = 0;
                 var DailyAmount = 0;
@@ -369,8 +402,6 @@
             calAmount = MonthlyAmount;
         }
         addItem();
-        location.href=location.href
-
     }
 
     //show_goal_detail
